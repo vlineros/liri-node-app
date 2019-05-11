@@ -3,19 +3,17 @@ var moment = require("moment");
 const axios = require("axios");
 var Spotify = require("node-spotify-api");
 var keys = require("./keys.js");
+const fs = require("fs");
 
 var spotify = new Spotify(keys.spotify);
 
-function getMovie() {
-  var movieName = "mr+nobody";
-  if (process.argv[3]) {
-    movieName = process.argv.slice(3).join("+");
+function getMovie(movieName) {
+  var movie = "mr+nobody";
+  if (movieName) {
+    movie = movieName;
   }
-  console.log(movieName);
   axios
-    .get(
-      "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy"
-    )
+    .get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=trilogy")
     .then(function(response) {
       console.log("Title: " + response.data.Title);
       console.log("Year: " + response.data.Year);
@@ -30,9 +28,11 @@ function getMovie() {
       console.log(error);
     });
 }
-function getConcert() {
-  var artist = process.argv.slice(3).join("+");
-  console.log(artist);
+function getConcert(artistName) {
+  var artist = "two+door+cinema+club";
+  if (artistName) {
+    artist = artistName;
+  }
   axios
     .get(
       "https://rest.bandsintown.com/artists/" +
@@ -54,33 +54,57 @@ function getConcert() {
     });
 }
 
-function getSong() {
+function getSong(songName) {
   var song = "the+sign";
-  if (process.argv[3]) {
-    song = process.argv.slice(3).join(" ");
+  if (songName) {
+    song = songName;
   }
   spotify
-    .search({ type: "track", query: song, limit: 5 })
+    .request(
+      "https://api.spotify.com/v1/search?q=" +
+        song +
+        "&type=track&market=US&limit=5"
+    )
     .then(function(response) {
-      console.log(response);
+      console.log(response.tracks.items[0].artists[0].name);
+      console.log(response.tracks.items[0].name);
+      let preview = response.tracks.items[0].preview_url;
+      if (preview != null) {
+        console.log(preview);
+      } else console.log("Sorry no preview is available.");
+      console.log(response.tracks.items[0].album.name);
     })
     .catch(function(err) {
       console.log(err);
     });
 }
 
-switch (process.argv[2]) {
-  case "concert-this":
-    getConcert();
-    break;
-  case "spotify-this-song":
-    getSong();
-    break;
-
-  case "movie-this":
-    getMovie();
-    break;
-
-  case "do-what-it-says":
-    break;
+function getFileThing() {
+  var fileThing = "";
+  fs.readFile("random.txt", "utf8", function(err, data) {
+    if (err) throw err;
+    fileThing = data.split(",");
+    Main(fileThing[0], fileThing[1]);
+  });
 }
+
+// ******************************NEED TO HIDE API KEYS ***************************
+function Main(category, thing) {
+  switch (category) {
+    case "concert-this":
+      getConcert(thing);
+      break;
+    case "spotify-this-song":
+      getSong(thing);
+      break;
+
+    case "movie-this":
+      getMovie(thing);
+      break;
+
+    case "do-what-it-says":
+      getFileThing(thing);
+      break;
+  }
+}
+Main(process.argv[2], process.argv.slice(3).join("+"));
