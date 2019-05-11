@@ -4,16 +4,29 @@
 
 This simple app let's you easily access basic information on bands, movies and concerts.
 
-###APIs:
+### APIs:
 * Spotify
 * OMDB
 * Bands in Town
 
-Please see below for examples on how to find information
+Please click the below link for a quick video for examples of how to use the app.
+[Example Video Link](https://drive.google.com/file/d/1SwQ23ln9SD8yOVGHmmC7YkwDrQl0wsEy/view)
+
+Please see below for example input:
 ---
 
-###Bands:
-![GIF of band search example](https://drive.google.com/file/d/19MWI8SNWJLsmCTa64uSdRQs2Yv4SqRdq/view?usp=sharing "Band Search Example")
+### Concerts:
+```
+node liri concert-this [name of band]
+```
 
+### Songs: 
+```
+node liri spotify-this-song [name of song]
+```
 
+### Movies: 
+```
+node liri movie-this [name of movie]
+```
 
