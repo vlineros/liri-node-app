@@ -42,11 +42,16 @@ function getConcert(artistName) {
     .then(function(response) {
       for (let i = 0; i < response.data.length; i++) {
         console.log("\n");
-        console.log(response.data[i].venue.name);
+        console.log("Venue: " + response.data[i].venue.name);
         console.log(
-          response.data[0].venue.city + ", " + response.data[i].venue.country
+          "Location: " +
+            response.data[0].venue.city +
+            ", " +
+            response.data[i].venue.country
         );
-        console.log(moment(response.data[i].datetime).format("MM/DD/YYYY"));
+        console.log(
+          "Date: " + moment(response.data[i].datetime).format("MM/DD/YYYY")
+        );
       }
     })
     .catch(function(error) {
@@ -66,13 +71,13 @@ function getSong(songName) {
         "&type=track&market=US&limit=5"
     )
     .then(function(response) {
-      console.log(response.tracks.items[0].artists[0].name);
-      console.log(response.tracks.items[0].name);
+      console.log("Artist: " + response.tracks.items[0].artists[0].name);
+      console.log("Title: " + response.tracks.items[0].name);
       let preview = response.tracks.items[0].preview_url;
       if (preview != null) {
-        console.log(preview);
+        console.log("Link to preview: " + preview);
       } else console.log("Sorry no preview is available.");
-      console.log(response.tracks.items[0].album.name);
+      console.log("Album: " + response.tracks.items[0].album.name);
     })
     .catch(function(err) {
       console.log(err);
